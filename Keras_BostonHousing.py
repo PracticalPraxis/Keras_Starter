@@ -1,10 +1,12 @@
 #This model is trained on a dataset of information about housing in 1970's Boston
 #The model is built around the core present in other models in the Keras_Starter folder, with the addition of K-Fold Validation 
-#This use of K-Fold Validation makes it somewhat reliable (ultimate predictions are off by about $2,500), but computationally expensieve
-#This version of the model also runs for 500 epochs but starts overfitting around the 100th. All in all, an educational experiment
+#This use of K-Fold Validation makes it somewhat reliable (ultimate predictions are off by about $2,500), 
+#but computationally expensieve
+#This version of the model also runs for 500 epochs but starts overfitting around the 100th
+#All in all, an educational experiment
 
-#There are 13 features for each data point, including things like the per capita crime rate for the area, the surrounding pupil-teacher ratio 
-#and the average number of rooms per house
+#There are 13 features for each data point, including things like the per capita crime rate for the area, 
+#the surrounding pupil-teacher ratio and the average number of rooms per house
 #Our model will learn the prices associated with various houses that all have values for each of these features, and then try 
 #to predict the median price of a seperate set of homes
 from keras.datasets import boston_housing
@@ -16,7 +18,8 @@ import matplotlib.pyplot as plt
 #Arranges the housing data into distinct training and test partitions with analgous divisions
 (train_data, train_targets), (test_data, test_targets) = boston_housing.load_data()
 
-#Ensures our training and test data is easier to iterate over by making the nominal range of the data much smaller using using feature-wise normalization
+#Ensures our training and test data is easier to iterate over by making the nominal range 
+#of the data much smaller using using feature-wise normalization
 #This is important as there are some features in our dataset that use a very wide scale and some that use a very slim scale
 #This normalization will ensure they all have similar values
 mean = train_data.mean(axis=0)
@@ -29,25 +32,31 @@ test_data /= std
 
 #Defines the model we'll be using
 def build_model():
-	#Declares the overall structure of the model, in this case the Sequential class. The model itself is made out of 3 Dense layers
+	#Declares the overall structure of the model, in this case the Sequential class. The model itself 
+	#is made out of 3 Dense layers
 	model = models.Sequential()
-	#In the first layer the model outputs a vector with 64 dimensions, while the relu activation meeans the layer will outputthe maximum value of layer's dot product computation
+	#In the first layer the model outputs a vector with 64 dimensions, while the relu activation meeans the 
+	#layer will outputthe maximum value of layer's dot product computation
 	model.add(layers.Dense(64, activation='relu',
 						   input_shape=(train_data.shape[1],)))
 	model.add(layers.Dense(64, activation='relu'))
 	model.add(layers.Dense(1))
 	
-	#The model is complied with the optimizer rmsprop which which keeps a moving average over the root mean squared gradients (rms) which the gradient at use gets divided by
+	#The model is complied with the optimizer rmsprop which which keeps a moving average over the 
+	#root mean squared gradients (rms) which the gradient at use gets divided by
 	#This value is used to reduce our loss value
-	#Loss is calculated using Mean Squared Error (MSE), the square of the difference between the model's output and its targets
+	#Loss is calculated using Mean Squared Error (MSE), the square of the difference between the model's 
+	#output and its targets
 	#Finaly, we declare a single metric to print, the value of the Mean Absolute Error at each iteration
 	model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
 	return model
 
-#To improve the accuracy of the model we'll use K-fold validation which splits the data into K equal parts and then trains a model on the reamining K - 1 partitions
+#To improve the accuracy of the model we'll use K-fold validation which splits the data into K equal parts and then 
+#trains a model on the reamining K - 1 partitions
 #The ultimate value we get is the mean of all the resulsts of these K models
 k = 4
-#Having declared the relevant variable for K-Fold Validation, we now know our model will run on the below code 4times, for 500 epochs at a time, before finishing
+#Having declared the relevant variable for K-Fold Validation, we now know our model will run on the below code 4 times
+#for 500 epochs at a time, before finishing
 num_val_samples = len(train_data) // k
 num_epochs = 500
 all_mae_histories = []
